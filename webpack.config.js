@@ -1,10 +1,10 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyPlugin = require('copy-webpack-plugin');
 const path = require('path');
 
 module.exports = {
   entry: {
-    d3: './d3.min.js',  
+    d3: './d3.min.js',
     chart: './src/chart.js',
   },
   output: {
@@ -37,7 +37,7 @@ module.exports = {
       patterns: [
         {
           from: path.resolve(__dirname, 'my_weather_data.json'),
-        }
+        },
       ],
     }),
   ],
