@@ -47,7 +47,7 @@ async function drawLineChart() {
     .attr('width', dimensions.boundWidth)
     .attr('y', freezingTempPlacement)
     .attr('height', dimensions.boundHeight - freezingTempPlacement)
-    .attr('fill', '#e0f3f3');
+    .attr('fill', '#5386e4');
 
   const xScale = d3.scaleTime()
     .domain(d3.extent(dataset, xAccessor))
@@ -60,7 +60,7 @@ async function drawLineChart() {
   const line = bounds.append('path')
     .attr('d', lineGenerator(dataset))
     .attr('fill', 'none')
-    .attr('stroke', '#ffa500')
+    .attr('stroke', '#c3c3c3')
     .attr('stroke-width', 2);
 
   const yAxisGenerator = d3.axisLeft()
