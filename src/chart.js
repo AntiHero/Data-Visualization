@@ -59,10 +59,15 @@ async function drawLineChart() {
   const line = bounds.append('path')
     .attr('d', lineGenerator(dataset))
     .attr('fill', 'none')
-    .attr('stroke', '#dda0dd')
+    .attr('stroke', '#ffa500')
     .attr('stroke-width', 2);
 
-  console.table(yScale(32));
+  const yAxisGenerator = d3.axisLeft()
+    .scale(yScale)
+  
+  const yAxis = bounds.append('g')
+    .call(yAxisGenerator);
+
 }
 
 drawLineChart();
