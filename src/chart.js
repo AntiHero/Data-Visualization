@@ -20,9 +20,9 @@ async function drawLineChart() {
   dimensions.boundHeight = dimensions.height
     - dimensions.margin.top - dimensions.margin.bottom;
 
-  const wrapper = d3.select('.wrapper');
+  const lineChart = d3.select('.line-chart');
 
-  const svg = wrapper.append('svg')
+  const svg = lineChart.append('svg')
     .attr('width', dimensions.width)
     .attr('height', dimensions.height);
 
@@ -64,11 +64,20 @@ async function drawLineChart() {
     .attr('stroke-width', 2);
 
   const yAxisGenerator = d3.axisLeft()
-    .scale(yScale)
+    .scale(yScale);
   
   const yAxis = bounds.append('g')
     .call(yAxisGenerator);
 
+  const xAxisGenerator = d3.axisBottom()
+    .scale(xScale);
+
+  const xAxis = bounds.append('g')
+    .call(xAxisGenerator)
+    .style(
+      'transform',
+      `translateY(${dimensions.boundHeight}px)`,
+    );
 }
 
 drawLineChart();
