@@ -4,7 +4,6 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    d3: './d3.min.js',
     chart: './src/chart.js',
   },
   output: {

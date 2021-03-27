@@ -1,3 +1,4 @@
+import * as d3 from "d3";
 import { yAccessor, xAccessor } from './utils/accessors';
 
 async function drawLineChart() {
