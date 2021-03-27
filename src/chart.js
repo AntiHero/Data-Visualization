@@ -48,7 +48,7 @@ async function drawLineChart() {
     .attr('width', dimensions.boundWidth)
     .attr('y', freezingTempPlacement)
     .attr('height', dimensions.boundHeight - freezingTempPlacement)
-    .attr('fill', '#5386e4');
+    .attr('fill', '#2b65ec');
 
   const xScale = d3.scaleTime()
     .domain(d3.extent(dataset, xAccessor))
