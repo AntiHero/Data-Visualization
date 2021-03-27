@@ -14,8 +14,8 @@
     "type": "git",
     "url": "git+https://github.com/AntiHero/Data-Visualization.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["D3", "Data Visualization"],
+  "author": "Aleksandr Schemelev",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/AntiHero/Data-Visualization/issues"
