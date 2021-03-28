@@ -1,7 +1,11 @@
-import * as d3 from "d3";
-import convertFtoC from './helpers';
+import { convertFtoC, dateParser } from './helpers';
 
-const dateParser = d3.timeParse('%Y-%m-%d');
+export const lineChartAccessors = {
+  xAccessor: (d) => dateParser(d.date),
+  yAccessor: (d) => convertFtoC(d.temperatureMax),
+}
 
-export const yAccessor = (d) => convertFtoC(d.temperatureMax);
-export const xAccessor = (d) => dateParser(d.date);
+export const scatterPlotAccessors = {
+  xAccessor: (d) => d.dewPoint,
+  yAccessor: (d) => d.humidity,
+}

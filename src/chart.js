@@ -1,10 +1,14 @@
-import * as d3 from "d3";
-import { yAccessor, xAccessor } from './utils/accessors';
+import * as d3 from 'd3';
+import { lineChartAccessors, scatterPlotAccessors } from './utils/accessors';
 import './styles/style.css';
 
-async function drawLineChart() {
+async function getDataset() {
   const dataset = await d3.json('./my_weather_data.json');
 
+  return dataset;
+}
+
+function drawLineChart(dataset) {
   const dimensions = {
     width: window.innerWidth * 0.9,
     height: 400,
@@ -16,14 +20,15 @@ async function drawLineChart() {
     },
   };
 
-  dimensions.boundWidth = dimensions.width
-    - dimensions.margin.left - dimensions.margin.right;
-  dimensions.boundHeight = dimensions.height
-    - dimensions.margin.top - dimensions.margin.bottom;
+  dimensions.boundedWidth =
+    dimensions.width - dimensions.margin.left - dimensions.margin.right;
+  dimensions.boundedHeight =
+    dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
 
-  const lineChart = d3.select('.line-chart');
+  const wrapper = d3.select('.line-chart');
 
-  const svg = lineChart.append('svg')
+  const svg = wrapper
+    .append('svg')
     .attr('width', dimensions.width)
     .attr('height', dimensions.height);
 
@@ -31,54 +36,144 @@ async function drawLineChart() {
     .append('g')
     .style(
       'transform',
-      `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`,
+      `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`
     );
 
   const yScale = d3
     .scaleLinear()
     // min-max input values
-    .domain(d3.extent(dataset, yAccessor))
+    .domain(d3.extent(dataset, lineChartAccessors.yAccessor))
     // min-max output values
-    .range([dimensions.boundHeight, 0]);
+    .range([dimensions.boundedHeight, 0]);
 
   const freezingTempPlacement = yScale(0);
 
-  const freezingTemps = bounds.append('rect')
+  // freezingTemps
+  bounds
+    .append('rect')
     .attr('x', 0)
-    .attr('width', dimensions.boundWidth)
+    .attr('width', dimensions.boundedWidth)
     .attr('y', freezingTempPlacement)
-    .attr('height', dimensions.boundHeight - freezingTempPlacement)
+    .attr('height', dimensions.boundedHeight - freezingTempPlacement)
     .attr('fill', '#2b65ec');
 
-  const xScale = d3.scaleTime()
-    .domain(d3.extent(dataset, xAccessor))
-    .range([0, dimensions.boundWidth]);
+  const xScale = d3
+    .scaleTime()
+    .domain(d3.extent(dataset, lineChartAccessors.xAccessor))
+    .range([0, dimensions.boundedWidth]);
 
-  const lineGenerator = d3.line()
-    .x(d => xScale(xAccessor(d)))
-    .y(d => yScale(yAccessor(d)));
+  const lineGenerator = d3
+    .line()
+    .x((d) => xScale(lineChartAccessors.xAccessor(d)))
+    .y((d) => yScale(lineChartAccessors.yAccessor(d)));
 
-  const line = bounds.append('path')
+  // line
+  bounds
+    .append('path')
     .attr('d', lineGenerator(dataset))
     .attr('fill', 'none')
     .attr('stroke', '#c3c3c3')
     .attr('stroke-width', 2);
 
-  const yAxisGenerator = d3.axisLeft()
-    .scale(yScale);
-  
-  const yAxis = bounds.append('g')
-    .call(yAxisGenerator);
+  const yAxisGenerator = d3.axisLeft().scale(yScale);
 
-  const xAxisGenerator = d3.axisBottom()
-    .scale(xScale);
+  // yAxis
+  bounds.append('g').call(yAxisGenerator);
 
-  const xAxis = bounds.append('g')
+  const xAxisGenerator = d3.axisBottom().scale(xScale);
+
+  // xAxis
+  bounds
+    .append('g')
     .call(xAxisGenerator)
-    .style(
-      'transform',
-      `translateY(${dimensions.boundHeight}px)`,
-    );
+    .style('transform', `translateY(${dimensions.boundedHeight}px)`);
 }
 
-drawLineChart();
+function drawScatterPlot(dataset) {
+  const width = d3.min([window.innerHeight * 0.9, window.innerWidth * 0.9]);
+
+  const dimensions = {
+    width,
+    height: width,
+    margin: {
+      top: 10,
+      right: 10,
+      bottom: 50,
+      left: 50,
+    },
+  };
+
+  dimensions.boundedWidth =
+    dimensions.width - dimensions.margin.left - dimensions.margin.right;
+  dimensions.boundedHeight =
+    dimensions.height - dimensions.margin.top - dimensions.margin.bottom;
+
+  const wrapper = d3.select('.scatterplot');
+
+  const svg = wrapper
+    .append('svg')
+    .attr('width', dimensions.width)
+    .attr('height', dimensions.height);
+
+  const bounds = svg.append('g')
+    .style('transform', `translate(${
+      dimensions.margin.left
+    }px, ${
+      dimensions.margin.top
+    }px)`);
+
+  const xScale = d3.scaleLinear()
+    .domain(d3.extent(dataset, scatterPlotAccessors.xAccessor))
+    .range([0, dimensions.boundedWidth])
+    .nice();
+
+
+  const yScale = d3.scaleLinear()
+    .domain(d3.extent(dataset, scatterPlotAccessors.yAccessor))
+    .range([dimensions.boundedHeight, 0])
+    .nice();
+
+  // dataset.forEach(d => {
+  //   bounds
+  //     .append('circle')
+  //     .attr('cx', xScale(scatterPlotAccessors.xAccessor(d)))
+  //     .attr('cy', yScale(scatterPlotAccessors.yAccessor(d)))
+  //     .attr('r', 5)
+  // })
+
+  // const dots = bounds.selectAll('circle')
+  //   .data(dataset)
+  //   .enter()
+  //   .append('circle')
+  //   .attr('cx', d => xScale(scatterPlotAccessors.xAccessor(d)))
+  //   .attr('cy', d => yScale(scatterPlotAccessors.yAccessor(d)))
+  //   .attr('r', 5)
+  //   .attr('fill', 'cornflowerblue');
+
+  function drawDots(data, color) {
+    const dots = bounds.selectAll('circle').data(data);
+  
+    dots
+      .enter().append('circle')
+      .attr('cx', (d) => xScale(scatterPlotAccessors.xAccessor(d)))
+      .attr('cy', (d) => yScale(scatterPlotAccessors.yAccessor(d)))
+      .attr('r', 5)
+      .attr('fill', color)
+  }
+
+  drawDots(dataset.slice(0, 200), 'darkgrey');
+
+  setTimeout(() => {
+    drawDots(dataset, 'cornflowerblue')
+  }, 1000)
+
+  console.log(wrapper)
+
+  console.log(dots)
+
+}
+
+getDataset().then((dataset) => {
+  drawLineChart(dataset);
+  drawScatterPlot(dataset);
+});
