@@ -133,28 +133,12 @@ function drawScatterPlot(dataset) {
     .range([dimensions.boundedHeight, 0])
     .nice();
 
-  // dataset.forEach(d => {
-  //   bounds
-  //     .append('circle')
-  //     .attr('cx', xScale(scatterPlotAccessors.xAccessor(d)))
-  //     .attr('cy', yScale(scatterPlotAccessors.yAccessor(d)))
-  //     .attr('r', 5)
-  // })
-
-  // const dots = bounds.selectAll('circle')
-  //   .data(dataset)
-  //   .enter()
-  //   .append('circle')
-  //   .attr('cx', d => xScale(scatterPlotAccessors.xAccessor(d)))
-  //   .attr('cy', d => yScale(scatterPlotAccessors.yAccessor(d)))
-  //   .attr('r', 5)
-  //   .attr('fill', 'cornflowerblue');
-
   function drawDots(data, color) {
     const dots = bounds.selectAll('circle').data(data);
   
     dots
-      .enter().append('circle')
+      .enter()
+      .append('circle')
       .attr('cx', (d) => xScale(scatterPlotAccessors.xAccessor(d)))
       .attr('cy', (d) => yScale(scatterPlotAccessors.yAccessor(d)))
       .attr('r', 5)
