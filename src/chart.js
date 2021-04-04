@@ -137,25 +137,53 @@ function drawScatterPlot(dataset) {
     const dots = bounds.selectAll('circle').data(data);
   
     dots
-      .enter()
-      .append('circle')
+      .join('circle')
       .attr('cx', (d) => xScale(scatterPlotAccessors.xAccessor(d)))
       .attr('cy', (d) => yScale(scatterPlotAccessors.yAccessor(d)))
       .attr('r', 5)
       .attr('fill', color)
   }
 
-  drawDots(dataset.slice(0, 200), 'darkgrey');
+  // drawDots(dataset.slice(0, 200), 'darkgrey');
 
-  setTimeout(() => {
-    drawDots(dataset, 'cornflowerblue')
-  }, 1000)
+  // setTimeout(() => {
+  //   drawDots(dataset, 'cornflowerblue')
+  // }, 1000)
 
-  console.log(wrapper)
+  drawDots(dataset, 'cornflowerblue ');
 
-  console.log(dots)
+  const xAxisGenerator = d3.axisBottom()
+    .scale(xScale);
 
-}
+  const xAxis = bounds.append('g')
+    .call(xAxisGenerator)
+    .style('transform', `translateY(${dimensions.boundedHeight}px)`);
+
+
+  // xAxisLabel
+  xAxis.append('text')
+    .attr('x', dimensions.boundedWidth / 2)
+    .attr('y', dimensions.margin.bottom - 10)
+    .attr('fill', 'black')
+    .style('font-size', '1.4em')
+    .html('Dew point(&deg;F)');
+  
+  const yAxisGenerator = d3.axisLeft()
+    .scale(yScale)
+    .ticks(5);  
+
+  const yAxis = bounds.append('g')
+    .call(yAxisGenerator)
+
+  xAxis.append('text')
+    .style('transform', 'rotate(-90deg)')
+    .style('text-anchor', 'middle')
+    .attr('x', dimensions.boundedHeight / 2)
+    .attr('y', - dimensions.margin.right - 20)
+    .attr('fill', 'black')
+    .html('Relative humidity')
+    .style('font-size', '1.4em')
+  }
 
 getDataset().then((dataset) => {
   drawLineChart(dataset);
