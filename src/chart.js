@@ -115,33 +115,39 @@ function drawScatterPlot(dataset) {
     .attr('width', dimensions.width)
     .attr('height', dimensions.height);
 
-  const bounds = svg.append('g')
-    .style('transform', `translate(${
-      dimensions.margin.left
-    }px, ${
-      dimensions.margin.top
-    }px)`);
+  const bounds = svg
+    .append('g')
+    .style(
+      'transform',
+      `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`
+    );
 
-  const xScale = d3.scaleLinear()
+  const xScale = d3
+    .scaleLinear()
     .domain(d3.extent(dataset, scatterPlotAccessors.xAccessor))
     .range([0, dimensions.boundedWidth])
     .nice();
 
-
-  const yScale = d3.scaleLinear()
+  const yScale = d3
+    .scaleLinear()
     .domain(d3.extent(dataset, scatterPlotAccessors.yAccessor))
     .range([dimensions.boundedHeight, 0])
     .nice();
 
-  function drawDots(data, color) {
+  const colorScale = d3
+    .scaleLinear()
+    .domain(d3.extent(dataset, scatterPlotAccessors.colorAccessor))
+    .range(['skyblue', 'darkslategrey']);
+
+  function drawDots(data) {
     const dots = bounds.selectAll('circle').data(data);
-  
+
     dots
       .join('circle')
       .attr('cx', (d) => xScale(scatterPlotAccessors.xAccessor(d)))
       .attr('cy', (d) => yScale(scatterPlotAccessors.yAccessor(d)))
       .attr('r', 5)
-      .attr('fill', color)
+      .attr('fill', (d) => colorScale(scatterPlotAccessors.colorAccessor(d)));
   }
 
   // drawDots(dataset.slice(0, 200), 'darkgrey');
@@ -150,40 +156,39 @@ function drawScatterPlot(dataset) {
   //   drawDots(dataset, 'cornflowerblue')
   // }, 1000)
 
-  drawDots(dataset, 'cornflowerblue ');
+  drawDots(dataset);
 
-  const xAxisGenerator = d3.axisBottom()
-    .scale(xScale);
+  const xAxisGenerator = d3.axisBottom().scale(xScale);
 
-  const xAxis = bounds.append('g')
+  const xAxis = bounds
+    .append('g')
     .call(xAxisGenerator)
     .style('transform', `translateY(${dimensions.boundedHeight}px)`);
 
-
   // xAxisLabel
-  xAxis.append('text')
+  xAxis
+    .append('text')
     .attr('x', dimensions.boundedWidth / 2)
     .attr('y', dimensions.margin.bottom - 10)
     .attr('fill', 'black')
     .style('font-size', '1.4em')
     .html('Dew point(&deg;F)');
-  
-  const yAxisGenerator = d3.axisLeft()
-    .scale(yScale)
-    .ticks(5);  
 
-  const yAxis = bounds.append('g')
-    .call(yAxisGenerator)
+  const yAxisGenerator = d3.axisLeft().scale(yScale).ticks(5);
 
-  xAxis.append('text')
-    .style('transform', 'rotate(-90deg)')
-    .style('text-anchor', 'middle')
+  // yAxis
+  bounds.append('g').call(yAxisGenerator);
+
+  xAxis
+    .append('text')
     .attr('x', dimensions.boundedHeight / 2)
-    .attr('y', - dimensions.margin.right - 20)
+    .attr('y', -dimensions.margin.right - 20)
     .attr('fill', 'black')
     .html('Relative humidity')
     .style('font-size', '1.4em')
-  }
+    .style('transform', 'rotate(-90deg)')
+    .style('text-anchor', 'middle');
+}
 
 getDataset().then((dataset) => {
   drawLineChart(dataset);

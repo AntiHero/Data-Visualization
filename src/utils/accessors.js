@@ -8,4 +8,5 @@ export const lineChartAccessors = {
 export const scatterPlotAccessors = {
   xAccessor: (d) => d.dewPoint,
   yAccessor: (d) => d.humidity,
+  colorAccessor: (d) => d.cloudCover,
 }
