@@ -150,12 +150,6 @@ function drawScatterPlot(dataset) {
       .attr('fill', (d) => colorScale(scatterPlotAccessors.colorAccessor(d)));
   }
 
-  // drawDots(dataset.slice(0, 200), 'darkgrey');
-
-  // setTimeout(() => {
-  //   drawDots(dataset, 'cornflowerblue')
-  // }, 1000)
-
   drawDots(dataset);
 
   const xAxisGenerator = d3.axisBottom().scale(xScale);
